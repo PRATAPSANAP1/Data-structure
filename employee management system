@@ -1,0 +1,249 @@
+#include<iostream>
+#include<string>
+using namespace std;
+
+struct Employee{
+int id;
+string name;
+double salary;
+Employee* left;
+Employee* right;
+
+Employee(int x,string y,double z){
+id=x;
+name=y;
+salary=z;
+left=right=nullptr;
+}
+};
+
+class Employee1{
+public:
+Employee* root=nullptr;
+
+void insertEmployee(int id,string name,double salary){
+Employee* newEmployee=new Employee(id,name,salary);
+if(root==NULL){
+root=newEmployee;
+return;
+}
+Employee* current=root;
+Employee* prev=nullptr;
+
+while(current!=nullptr){
+prev=current;
+if(salary<current->salary){
+current=current->left;
+}else if(salary>current->salary){
+current=current->right;
+}else{
+return;
+}
+}
+
+if(salary<prev->salary){
+prev->left=newEmployee;
+}else{
+prev->right=newEmployee;
+}
+}
+
+Employee* searchEmployeeBySalary(double salary){
+Employee* current=root;
+while(current!=nullptr){
+if(salary==current->salary){
+return current;
+}else if(salary<current->salary){
+current=current->left;
+}else{
+current=current->right;
+}
+}
+return nullptr;
+}
+
+void updateSalary(double oldSalary,double newSalary){
+Employee* result=searchEmployeeBySalary(oldSalary);
+if(result!=nullptr){
+result->salary=newSalary;
+cout<<"Salary Updated from $"<<oldSalary<<" to $"<<newSalary<<endl;
+}else{
+cout<<"Employee with Salary $"<<oldSalary<<" not found!\n";
+}
+}
+
+void displayEmployees(Employee* node){
+if(node==NULL)return;
+displayEmployees(node->left);
+cout<<"ID: "<<node->id<<", Name: "<<node->name<<", Salary: $"<<node->salary<<endl;
+displayEmployees(node->right);
+}
+
+void findEmployeeWithMinSalary(){
+if(root==NULL){
+cout<<"No employees in the system.\n";
+return;
+}
+Employee* current=root;
+while(current->left!=NULL){
+current=current->left;
+}
+cout<<"Lowest Paid Employee:\n";
+cout<<"ID: "<<current->id<<", Name: "<<current->name<<", Salary: $"<<current->salary<<endl;
+}
+
+double findMaxSalary(){
+if(root==NULL){
+return -1;
+}
+Employee* current=root;
+while(current->right!=NULL){
+current=current->right;
+}
+return current->salary;
+}
+
+double findAverageSalary(){
+double total=0;
+int count=0;
+calculateSalarySum(root,total,count);
+return count==0?0:total/count;
+}
+
+void calculateSalarySum(Employee* node,double& total,int& count){
+if(node==NULL)return;
+calculateSalarySum(node->left,total,count);
+total+=node->salary;
+count++;
+calculateSalarySum(node->right,total,count);
+}
+
+int totalEmployees(){
+return countEmployees(root);
+}
+
+int countEmployees(Employee* node){
+if(!node)return 0;
+return 1+countEmployees(node->left)+countEmployees(node->right);
+}
+
+Employee* findMinNode(Employee* node){
+while(node&&node->left){
+node=node->left;
+}
+return node;
+}
+
+Employee* deleteEmployee(Employee* node,double salary){
+if(!node)return node;
+if(salary<node->salary){
+node->left=deleteEmployee(node->left,salary);
+}else if(salary>node->salary){
+node->right=deleteEmployee(node->right,salary);
+}else{
+if(!node->left){
+Employee* temp=node->right;
+delete node;
+return temp;
+}else if(!node->right){
+Employee* temp=node->left;
+delete node;
+return temp;
+}
+Employee* temp=findMinNode(node->right);
+node->id=temp->id;
+node->name=temp->name;
+node->salary=temp->salary;
+node->right=deleteEmployee(node->right,temp->salary);
+}
+return node;
+}
+
+void deleteEmployee(double salary){
+root=deleteEmployee(root,salary);
+cout<<"Employee with Salary $"<<salary<<" deleted successfully!\n";
+}
+};
+
+int main(){
+Employee1 e;
+int choice,id;
+string name;
+double salary,newSalary;
+
+do{
+cout<<"\n1. Insert Employee\n2. Search Employee by Salary\n3. Update Salary\n4. Display Employees\n";
+cout<<"5. Find Minimum Salary\n6. Find Maximum Salary\n7. Find Average Salary\n8. Total Employees\n9. Delete Employee\n10. Exit\n";
+cout<<"Enter your choice: ";
+cin>>choice;
+
+switch(choice){
+case 1:
+cout<<"Enter Employee ID: ";
+cin>>id;
+cout<<"Enter Employee Name: ";
+cin>>name;
+cout<<"Enter Employee Salary: ";
+cin>>salary;
+e.insertEmployee(id,name,salary);
+break;
+case 2:
+cout<<"Enter Salary to search: ";
+cin>>salary;
+if(Employee* emp=e.searchEmployeeBySalary(salary)){
+cout<<"Employee Found! ID: "<<emp->id<<", Name: "<<emp->name<<", Salary: $"<<emp->salary<<endl;
+}else{
+cout<<"Employee with Salary $"<<salary<<" not found!\n";
+}
+break;
+case 3:
+cout<<"Enter current Salary to update: ";
+cin>>salary;
+cout<<"Enter new Salary: ";
+cin>>newSalary;
+e.updateSalary(salary,newSalary);
+break;
+case 4:
+if(e.root){
+e.displayEmployees(e.root);
+}else{
+cout<<"No employees in the system.\n";
+}
+break;
+case 5:
+e.findEmployeeWithMinSalary();
+break;
+case 6:
+salary=e.findMaxSalary();
+if(salary==-1){
+cout<<"No employees in the system.\n";
+}else{
+cout<<"Maximum Salary: $"<<salary<<endl;
+}
+break;
+case 7:
+salary=e.findAverageSalary();
+if(salary==0){
+cout<<"No employees in the system.\n";
+}else{
+cout<<"Average Salary: $"<<salary<<endl;
+}
+break;
+case 8:
+cout<<"Total Employees: "<<e.totalEmployees()<<endl;
+break;
+case 9:
+cout<<"Enter Salary to delete: ";
+cin>>salary;
+e.deleteEmployee(salary);
+break;
+case 10:
+cout<<"Exiting...\n";
+break;
+default:
+cout<<"Invalid choice! Try again.\n";
+}
+}while(choice!=10);
+
+return 0;
+}
