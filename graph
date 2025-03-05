@@ -1,0 +1,50 @@
+#include<iostream>
+using namespace std;
+class graph
+{
+public:
+int* arr[20];
+int data;
+graph* next;
+graph(int x)
+{
+data=x;
+next=NULL;
+}
+graph* head=NULL;
+void insert(int adjest)
+{
+for(int i=0;i<adjest;i++)
+{
+graph* newnode=new graph(data);
+if(head==NULL)
+{
+head=newnode;
+return;
+}
+else
+{
+graph* temp=head;
+while(temp->next!=NULL)
+{
+graph* prev=temp;
+temp=temp->next;
+}
+prev=newnode;
+
+}
+};
+int main()
+{
+graph g;
+int x,y,u,v,n,i;
+cout<<"Enter the number vertex you want to insert:";
+cin>>n;
+for(i=0;i<n;i++)
+{
+ cout<<"Enter the number of adjest vertex of"<<i<<":";
+ cin>>x;
+ g.insert(x);
+}
+ 
+}
