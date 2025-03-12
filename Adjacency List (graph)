@@ -21,11 +21,11 @@ class graph
     {
         Node* newNode1=new Node(citya,cost);
         newNode1->next=AdjList[cityb];
-        AdjList[cityb]=newNode1->next;
+        AdjList[cityb]=newNode1;
 
         Node* newNode2=new Node(cityb,cost);
         newNode2->next=AdjList[citya];
-        AdjList[citya]=newNode2->next;
+        AdjList[citya]=newNode2;
     }
 
     void display()
@@ -58,6 +58,20 @@ class graph
         }
     }
     
+    int cost(string a,string b)
+    {
+    Node* temp=AdjList[a];
+    while(temp!=nullptr)
+    {
+    if(temp->city==b)
+    {
+    return temp->cost;
+    }
+    temp=temp->next;
+    }
+    return -1;
+    }
+     
 };
 int main()
 {
@@ -75,5 +89,19 @@ int main()
     }
     cout<<"Representation of Adjacent List:\n";
     g.display();
+    
+    
+     cout<<"\nEnter two cities to find the cost of flight from cityA to cityB:\n";
+    cin>>citya>>cityb;
+    int flightCost=g.cost(citya,cityb);
+    if(flightCost!=-1)
+    {
+        cout<<"Cost of flight from "<<citya<<" to "<<cityb<<" is: "<<flightCost<<"\n";
+    }
+    else
+    {
+        cout<<"No direct flight available between "<<citya<<" and "<<cityb<<".\n";
+    }
+
     return 0;
 }
