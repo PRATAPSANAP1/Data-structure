@@ -74,7 +74,7 @@ child=k;
 }}}}
 wt1+=min1;
 final1[parent]=1;
-start1[child]=-1;
+final1[child]=1;
 edge1.push_back(parent);
 edge1.push_back(child);
 edge1.push_back(min1);
