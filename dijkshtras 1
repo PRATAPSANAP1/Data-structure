@@ -1,0 +1,102 @@
+#include <iostream>
+#include <climits>
+using namespace std;
+
+class Graph {
+    int cities[20][20];  // Adjacency matrix
+    int dist[20];        // Shortest distances
+    bool visited[20];    // Visited markers
+    string names[20];    // City names
+    int n;               // Number of cities
+
+public:
+    Graph(int num) : n(num) {
+        // Initialize matrix and arrays
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<n; j++) {
+                cities[i][j] = 0;
+            }
+            dist[i] = INT_MAX;
+            visited[i] = false;
+        }
+    }
+
+    void addCity(int index, string name) {
+        names[index] = name;
+    }
+
+    void addPath(int a, int b, int d) {
+        cities[a][b] = d;
+        cities[b][a] = d;  // Undirected graph
+    }
+
+    void shortestPath(int start) {
+        // Initialize distances
+        for(int i=0; i<n; i++) {
+            dist[i] = cities[start][i] ? cities[start][i] : INT_MAX;
+            visited[i] = false;
+        }
+        dist[start] = 0;
+        visited[start] = true;
+
+        // Dijkstra's algorithm
+        for(int count=0; count<n-1; count++) {
+            // Find nearest unvisited city
+            int min_dist = INT_MAX;
+            int next = start;
+            for(int i=0; i<n; i++) {
+                if(!visited[i] && dist[i] < min_dist) {
+                    min_dist = dist[i];
+                    next = i;
+                }
+            }
+            visited[next] = true;
+
+            // Update distances
+            for(int i=0; i<n; i++) {
+                if(!visited[i] && cities[next][i] && 
+                   dist[next] + cities[next][i] < dist[i]) {
+                    dist[i] = dist[next] + cities[next][i];
+                }
+            }
+        }
+
+        // Print results
+        for(int i=0; i<n; i++) {
+            cout << "Distance to " << names[i] << ": " << dist[i] << endl;
+        }
+    }
+};
+
+int main() {
+    int num, paths;
+    cout << "Number of cities: ";
+    cin >> num;
+    Graph g(num);
+
+    // Get city names
+    for(int i=0; i<num; i++) {
+        string name;
+        cout << "City " << i+1 << " name: ";
+        cin >> name;
+        g.addCity(i, name);
+    }
+
+    // Get paths
+    cout << "Number of paths: ";
+    cin >> paths;
+    for(int i=0; i<paths; i++) {
+        int a, b, d;
+        cout << "Path " << i+1 << " (cityA cityB distance): ";
+        cin >> a >> b >> d;
+        g.addPath(a-1, b-1, d);  // Using 0-based index
+    }
+
+    // Calculate shortest paths
+    int start;
+    cout << "Starting city index (0-based): ";
+    cin >> start;
+    g.shortestPath(start);
+
+    return 0;
+}
