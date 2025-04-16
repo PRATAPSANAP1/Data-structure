@@ -1,0 +1,70 @@
+#include <iostream>
+#include <list>
+using namespace std;
+
+const int SIZE = 10;
+
+class HashTable {
+    list<int> table[SIZE];
+
+    int hashFunction(int key) {
+        return key % SIZE;
+    }
+
+public:
+    void insert(int key) {
+        int index = hashFunction(key);
+        table[index].push_back(key);
+    }
+
+    void display() {
+        for (int i = 0; i < SIZE; i++) {
+            cout << "Bucket " << i << ": ";
+            for (int val : table[i]) {
+                cout << val << " ";
+            }
+            cout << endl;
+        }
+    }
+
+    bool search(int key) {
+        int index = hashFunction(key);
+        for (int val : table[index]) {
+            if (val == key)
+                return true;
+        }
+        return false;
+    }
+};
+
+int main() {
+    HashTable ht;
+    int choice, key;
+
+    do {
+        cout << "\n1. Insert\n2. Display\n3. Search\n4. Exit\nEnter choice: ";
+        cin >> choice;
+
+        if (choice == 1) {
+            cout << "Enter key: ";
+            cin >> key;
+            ht.insert(key);
+        } else if (choice == 2) {
+            ht.display();
+        } else if (choice == 3) {
+            cout << "Enter key to search: ";
+            cin >> key;
+            if (ht.search(key))
+                cout << "Found\n";
+            else
+                cout << "Not Found\n";
+        } else if (choice == 4) {
+            break;
+        } else {
+            cout << "Invalid choice\n";
+        }
+
+    } while (choice != 4);
+
+    return 0;
+}
