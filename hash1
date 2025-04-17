@@ -1,0 +1,230 @@
+#include<iostream>
+using namespace std;
+
+class music {
+public:
+    string name;
+    int id;
+    string type;
+
+    music() {
+        name = "empty";
+        type = "empty";
+        id = -1;
+    }
+};
+
+void insert(music m[], string name, string type, int id, int arry[], int n) {
+    int val = id % n;
+    int i = 0, j = 1;
+
+    if (arry[val] == -1 || arry[val] == -2) {
+        m[val].name = name;
+        m[val].type = type;
+        m[val].id = id;
+        arry[val] = 0;
+    } else {
+        while (i != 1) {
+            val = (val + 1) % n;
+            j++;
+            if (arry[val] == -1 || arry[val] == -2) {
+                m[val].name = name;
+                m[val].type = type;
+                m[val].id = id;
+                arry[val] = 0;
+                i = 1;
+            }
+            if (j == n) {
+                cout << "Hash table is full" << endl;
+                i = 1;
+            }
+        }
+    }
+}
+
+void display(music m[], int arry[], int n) {
+    for (int i = 0; i < n; i++) {
+        if (arry[i] != -1 && arry[i] != -2) {
+            cout << m[i].name << " " << m[i].type << " " << m[i].id << endl;
+        }
+    }
+}
+
+void update(music m[], int id, int n, int arry[]) {
+    int val = id % n;
+    int i = 0, j = 1;
+
+    if (m[val].id == id && arry[val] == 0) {
+        string name1, type1;
+        cout << "Enter new name: ";
+        cin >> name1;
+        cout << "Enter new type: ";
+        cin >> type1;
+        m[val].name = name1;
+        m[val].type = type1;
+        return;
+    }
+
+    while (i != 1) {
+        val = (val + 1) % n;
+        j++;
+        if (m[val].id == id && arry[val] == 0) {
+            string name1, type1;
+            cout << "Enter new name: ";
+            cin >> name1;
+            cout << "Enter new type: ";
+            cin >> type1;
+            m[val].name = name1;
+            m[val].type = type1;
+            i = 1;
+        }
+
+        if (j == n) {
+            cout << "Track not found" << endl;
+            i = 1;
+        }
+    }
+}
+
+void search(music m[], int id, int n, int arry[]) {
+    int val = id % n;
+    int i = 0, j = 1;
+
+    if (m[val].id == id && arry[val] == 0) {
+        cout << m[val].name << " " << m[val].type << " " << m[val].id << endl;
+        return;
+    }
+
+    while (i != 1) {
+        val = (val + 1) % n;
+        j++;
+        if (m[val].id == id && arry[val] == 0) {
+            cout << "Track found:" << endl;
+            cout << m[val].name << " " << m[val].type << " " << m[val].id << endl;
+            i = 1;
+        }
+
+        if (j == n) {
+            cout << "Track not found" << endl;
+            i = 1;
+        }
+    }
+}
+
+void delete1(music m[], int id, int n, int arry[]) {
+    int val = id % n;
+    int i = 0, j = 1;
+
+    if (m[val].id == id && arry[val] == 0) {
+        arry[val] = -2;
+        cout << "Element deleted" << endl;
+        return;
+    }
+
+    while (i != 1) {
+        val = (val + 1) % n;
+        j++;
+        if (m[val].id == id && arry[val] == 0) {
+            arry[val] = -2;
+            cout << "Element deleted" << endl;
+            i = 1;
+        }
+
+        if (j == n) {
+            cout << "Element not found" << endl;
+            i = 1;
+        }
+    }
+}
+
+void displayByType(music m[], int arry[], int n, string typeQuery) {
+    bool found = false;
+    for (int i = 0; i < n; i++) {
+        if (arry[i] == 0 && m[i].type == typeQuery) {
+            cout << m[i].name << " " << m[i].type << " " << m[i].id << endl;
+            found = true;
+        }
+    }
+    if (!found) {
+        cout << "No tracks found of type: " << typeQuery << endl;
+    }
+}
+
+int main() {
+    int ch, n;
+    cout << "Enter the number of music tracks (size of hash table): ";
+    cin >> n;
+
+    music m[n];
+    int arry[n];
+    for (int i = 0; i < n; i++) {
+        arry[i] = -1;
+    }
+
+    do {
+        cout << "\nWhat do you want to do?\n";
+        cout << "1. Insert music track\n";
+        cout << "2. Delete music track\n";
+        cout << "3. Display all tracks\n";
+        cout << "4. Update a track\n";
+        cout << "5. Search for a track\n";
+        cout << "6. Display tracks by type\n";
+        cout << "0. Exit\n";
+
+        cin >> ch;
+
+        string name, type;
+        int id;
+
+        switch (ch) {
+            case 1:
+                cout << "Enter track name: ";
+                cin >> name;
+                cout << "Enter track type: ";
+                cin >> type;
+                cout << "Enter track ID (integer): ";
+                cin >> id;
+                insert(m, name, type, id, arry, n);
+                break;
+
+            case 2:
+                cout << "Enter track ID to delete: ";
+                cin >> id;
+                delete1(m, id, n, arry);
+                break;
+
+            case 3:
+                display(m, arry, n);
+                break;
+
+            case 4:
+                cout << "Enter track ID to update: ";
+                cin >> id;
+                update(m, id, n, arry);
+                break;
+
+            case 5:
+                cout << "Enter track ID to search: ";
+                cin >> id;
+                search(m, id, n, arry);
+                break;
+
+            case 6:
+                cout << "Enter track type to filter: ";
+                cin >> type;
+                displayByType(m, arry, n, type);
+                break;
+
+            case 0:
+                cout << "Exiting program..." << endl;
+                break;
+
+            default:
+                cout << "Invalid choice!" << endl;
+                break;
+        }
+
+    } while (ch != 0);
+
+    return 0;
+}
