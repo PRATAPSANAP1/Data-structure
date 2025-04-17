@@ -1,230 +1,279 @@
 #include<iostream>
 using namespace std;
-
-class music {
+class Hashtable
+{
 public:
-    string name;
-    int id;
-    string type;
-
-    music() {
-        name = "empty";
-        type = "empty";
-        id = -1;
-    }
+string name;
+string id;
+string type;
+Hashtable()
+{
+name="empty";
+id="empty";
+type="empty";
+}
 };
 
-void insert(music m[], string name, string type, int id, int arry[], int n) {
-    int val = id % n;
-    int i = 0, j = 1;
+void insert(Hashtable h[],string name,string id,string type,int array[],int n)
+{
+int val=0;
+for(char c:id)
+{
+val+=(int)c;
+}
+val=val%n;
+int i=0,j=1;
+if(array[val]==-1||array[val]==-2)
+{
+h[val].name=name;
+h[val].id=id;
+h[val].type=type;
+array[val]=0;
+cout<<"inserted at:"<<val<<endl;
+}
+else
+{
+while(i!=1)
+{
+cout<<"collision occur at:"<<val<<endl;
+val=(val+1)%n;
+j++;
+if(array[val]==-1||array[val]==-2)
+{
 
-    if (arry[val] == -1 || arry[val] == -2) {
-        m[val].name = name;
-        m[val].type = type;
-        m[val].id = id;
-        arry[val] = 0;
-    } else {
-        while (i != 1) {
-            val = (val + 1) % n;
-            j++;
-            if (arry[val] == -1 || arry[val] == -2) {
-                m[val].name = name;
-                m[val].type = type;
-                m[val].id = id;
-                arry[val] = 0;
-                i = 1;
-            }
-            if (j == n) {
-                cout << "Hash table is full" << endl;
-                i = 1;
-            }
-        }
-    }
+h[val].name=name;
+h[val].id=id;
+h[val].type=type;
+array[val]=0;
+cout<<"inserted at:"<<val<<endl;
+i=1;
+}
+if(j==n)
+{
+cout<<"Hashtable table is full!!!";
+i=1;
+}
+}
+}
 }
 
-void display(music m[], int arry[], int n) {
-    for (int i = 0; i < n; i++) {
-        if (arry[i] != -1 && arry[i] != -2) {
-            cout << m[i].name << " " << m[i].type << " " << m[i].id << endl;
-        }
-    }
+void display(Hashtable h[],int array[],int n)
+{
+for(int i=0;i<n;i++)
+{
+if(array[i]==0)
+{
+cout<<"Name: "<<h[i].name<<endl;
+cout<<"id: "<<h[i].id<<endl;
+cout<<"type: "<<h[i].type<<endl;
+}
+}
 }
 
-void update(music m[], int id, int n, int arry[]) {
-    int val = id % n;
-    int i = 0, j = 1;
-
-    if (m[val].id == id && arry[val] == 0) {
-        string name1, type1;
-        cout << "Enter new name: ";
-        cin >> name1;
-        cout << "Enter new type: ";
-        cin >> type1;
-        m[val].name = name1;
-        m[val].type = type1;
-        return;
-    }
-
-    while (i != 1) {
-        val = (val + 1) % n;
-        j++;
-        if (m[val].id == id && arry[val] == 0) {
-            string name1, type1;
-            cout << "Enter new name: ";
-            cin >> name1;
-            cout << "Enter new type: ";
-            cin >> type1;
-            m[val].name = name1;
-            m[val].type = type1;
-            i = 1;
-        }
-
-        if (j == n) {
-            cout << "Track not found" << endl;
-            i = 1;
-        }
-    }
+void update(Hashtable h[],int array[],int n,string id)
+{
+int val=0;
+int i=0,j=1;
+for(char c:id)
+{
+val+=(int)c;
+}
+val=val%n;
+if(h[val].id==id&&array[val]==0)
+{
+string name1,type1,id1;
+cout<<"Enter the new music id: ";
+cin>>id1;
+cout<<"Enter the new music name: ";
+cin>>name1;
+cout<<"Enter the new music type: ";
+cin>>type1;
+h[val].name=name1;
+h[val].id=id1;
+h[val].type=type1;
+return;
+}
+while(i!=1)
+{
+val=(val+1)%n;
+j++;
+if(h[val].id==id&&array[val]==0)
+{
+string name1,type1,id1;
+cout<<"Enter the new music id: ";
+cin>>id1;
+cout<<"Enter the new music name: ";
+cin>>name1;
+cout<<"Enter the new music type: ";
+cin>>type1;
+h[val].name=name1;
+h[val].id=id1;
+h[val].type=type1;
+i=1;
+}
+if (j==n) {
+cout << "Track not found" << endl;
+i = 1;
+}
+}
 }
 
-void search(music m[], int id, int n, int arry[]) {
-    int val = id % n;
-    int i = 0, j = 1;
-
-    if (m[val].id == id && arry[val] == 0) {
-        cout << m[val].name << " " << m[val].type << " " << m[val].id << endl;
-        return;
-    }
-
-    while (i != 1) {
-        val = (val + 1) % n;
-        j++;
-        if (m[val].id == id && arry[val] == 0) {
-            cout << "Track found:" << endl;
-            cout << m[val].name << " " << m[val].type << " " << m[val].id << endl;
-            i = 1;
-        }
-
-        if (j == n) {
-            cout << "Track not found" << endl;
-            i = 1;
-        }
-    }
+void search(Hashtable h[],int array[],int n,string id)
+{
+int val=0;
+int i=0,j=1;
+for(char c:id)
+{
+val+=(int)c;
+}
+val=val%n;
+if(h[val].id==id&&array[val]==0)
+{
+cout<<"Name: "<<h[val].name<<endl;
+cout<<"id: "<<h[val].id<<endl;
+cout<<"type: "<<h[val].type<<endl;
+return;
+}
+while(i!=1)
+{
+val=(val+1)%n;
+j++;
+if(h[val].id==id&&array[val]==0)
+{
+cout<<"Name: "<<h[val].name<<endl;
+cout<<"id: "<<h[val].id<<endl;
+cout<<"type: "<<h[val].type<<endl;
+i=1;
+}
+if(j==n)
+{
+cout<<"Record is not found!!";
+i=1;
+}
+}
 }
 
-void delete1(music m[], int id, int n, int arry[]) {
-    int val = id % n;
-    int i = 0, j = 1;
-
-    if (m[val].id == id && arry[val] == 0) {
-        arry[val] = -2;
-        cout << "Element deleted" << endl;
-        return;
-    }
-
-    while (i != 1) {
-        val = (val + 1) % n;
-        j++;
-        if (m[val].id == id && arry[val] == 0) {
-            arry[val] = -2;
-            cout << "Element deleted" << endl;
-            i = 1;
-        }
-
-        if (j == n) {
-            cout << "Element not found" << endl;
-            i = 1;
-        }
-    }
+void deleterecord(Hashtable h[],int array[],int n,string id)
+{
+int val=0;
+int i=0,j=1;
+for(char c:id)
+{
+val+=(int)c;
+}
+val=val%n;
+if(h[val].id==id&&array[val]==0)
+{
+array[val]=-2;
+cout<<"Record deleted!!!";
+return;
+}
+while(i!=1)
+{
+val=(val+1)%n;
+j++;
+if(h[val].id==id&&array[val]==0)
+{
+array[val]=-2;
+cout<<"Record deleted!!!";
+i=1;
+}
+if (j==n) {
+cout << "Track not found" << endl;
+i = 1;
+}
 }
 
-void displayByType(music m[], int arry[], int n, string typeQuery) {
-    bool found = false;
-    for (int i = 0; i < n; i++) {
-        if (arry[i] == 0 && m[i].type == typeQuery) {
-            cout << m[i].name << " " << m[i].type << " " << m[i].id << endl;
-            found = true;
-        }
-    }
-    if (!found) {
-        cout << "No tracks found of type: " << typeQuery << endl;
-    }
 }
 
-int main() {
-    int ch, n;
-    cout << "Enter the number of music tracks (size of hash table): ";
-    cin >> n;
+void displaybytype(Hashtable h[],int array[],int n,string type1)
+{ int flag=0;
+for(int i=0;i<n;i++)
+{
+if(array[i]==0&&h[i].type==type1)
+{
+cout<<"Name: "<<h[i].name<<endl;
+cout<<"id: "<<h[i].id<<endl;
+cout<<"type: "<<h[i].type<<endl;
+flag=1;
+}
+}
+if(flag==0)
+{
+cout<<type1<<" is not present in record!!!";
+}
+}
 
-    music m[n];
-    int arry[n];
-    for (int i = 0; i < n; i++) {
-        arry[i] = -1;
-    }
+int main()
+{
+int n;
+cout<<"Enter number of music track you want to insert(Hashtable table size): ";
+cin>>n;
+Hashtable h[n];
+int array[n];
+for(int i=0;i<n;i++)
+{
+array[i]=-1;
+}
+int ch;
+string name,type,id,id1,type1;
+do
+{
+cout<<"1.Insert\n2.search\n3.update\n4.delete\n5.display\n6.display by type\n7.Exit\nEnter your choice: ";
+cin>>ch;
 
-    do {
-        cout << "\nWhat do you want to do?\n";
-        cout << "1. Insert music track\n";
-        cout << "2. Delete music track\n";
-        cout << "3. Display all tracks\n";
-        cout << "4. Update a track\n";
-        cout << "5. Search for a track\n";
-        cout << "6. Display tracks by type\n";
-        cout << "0. Exit\n";
+switch(ch)
+{
 
-        cin >> ch;
+case 1:
+cout<<"Enter the music id: ";
+cin>>id;
+cout<<"Enter the music name: ";
+cin>>name;
+cout<<"Enter the music type: ";
+cin>>type;
+insert(h,name,id,type,array,n);
+break;
 
-        string name, type;
-        int id;
+case 2:
+cout<<"Enter the id which you want search: ";
+cin>>id1;
+search(h,array,n,id1);
+break;
 
-        switch (ch) {
-            case 1:
-                cout << "Enter track name: ";
-                cin >> name;
-                cout << "Enter track type: ";
-                cin >> type;
-                cout << "Enter track ID (integer): ";
-                cin >> id;
-                insert(m, name, type, id, arry, n);
-                break;
+case 3:
+cout<<"Enter the id which you want update: ";
+cin>>id1;
+update(h,array,n,id1);
+break;
 
-            case 2:
-                cout << "Enter track ID to delete: ";
-                cin >> id;
-                delete1(m, id, n, arry);
-                break;
+case 4:
+cout<<"Enter the id which you want delete: ";
+cin>>id1;
+deleterecord(h,array,n,id1);
+break;
 
-            case 3:
-                display(m, arry, n);
-                break;
+case 5:
+display(h,array,n);
+break;
 
-            case 4:
-                cout << "Enter track ID to update: ";
-                cin >> id;
-                update(m, id, n, arry);
-                break;
+case 6:
+cout<<"Enter the type which you want display: ";
+cin>>type1;
+displaybytype(h,array,n,type1);
+break;
 
-            case 5:
-                cout << "Enter track ID to search: ";
-                cin >> id;
-                search(m, id, n, arry);
-                break;
+case 7:
+cout<<"Exiting!!";
+break;
 
-            case 6:
-                cout << "Enter track type to filter: ";
-                cin >> type;
-                displayByType(m, arry, n, type);
-                break;
+default:
+cout<<"Wrong choice! try again!!!";
 
-            case 0:
-                cout << "Exiting program..." << endl;
-                break;
+}
 
-            default:
-                cout << "Invalid choice!" << endl;
-                break;
-        }
+}
+while(ch!=7);
+return 0;
 
-    } while (ch != 0);
-
-    return 0;
 }
