@@ -1,51 +1,104 @@
-#include<iostream>
-#include<climits>
+#include <iostream>
+#include <climits>
 using namespace std;
 
 class OBST {
 public:
-int weight(int i,int j,int sp[],int usp[]) {
-int wt=0;
-for(int k=i;k<=j;k++) 
-{
-wt+=sp[k];
-}
-for(int k=i;k<=j+1;k++)
-{
- wt+=usp[k];
-}
-return wt;
-}
+    int n;
+    int W[20][20], C[20][20], R[20][20];
+    int keys[20];
 
-int cost(int i,int j,int sp[],int usp[]) {
-if(i>j)
-{
- return 0;
-}
-if(i==j) {
-return sp[i]+usp[i]+usp[i+1];
-}
-int minCost=INT_MAX;
-for(int r=i;r<=j;r++) {
-int c=cost(i,r-1,sp,usp)+cost(r+1,j,sp,usp);
-int w=weight(i,j,sp,usp);
-if(c+w<minCost)
-{
- minCost=c+w;
-}
-}
-return minCost;
-}
+    OBST(int size):n(size) {
+        for(int i=0;i<=n;i++) {
+            for(int j=0;j<=n;j++) {
+                W[i][j]=C[i][j]=R[i][j]=0;
+            }
+        }
+    }
+
+    void calcWeights(int sp[], int usp[]) {
+        for(int i=0;i<=n;i++) {
+            for(int j=i;j<=n;j++) {
+                W[i][j] = (i == j) ? usp[i] : W[i][j-1] + sp[j] + usp[j];
+            }
+        }
+    }
+
+    void calcCosts() {
+        for(int i=0;i<=n;i++) {
+            for(int j=0;j<=n-i;j++) {
+                int k=j+i;
+                if(j==k) C[j][k]=0;
+                else {
+                    int minCost=INT_MAX;
+                    for(int r=j+1;r<=k;r++) {
+                        int cost=C[j][r-1]+C[r][k]+W[j][k];
+                        if(cost<minCost) {
+                            minCost=cost;
+                            R[j][k]=r;
+                        }
+                    }
+                    C[j][k]=minCost;
+                }
+            }
+        }
+    }
+
+    void displayWeightsAndCosts() {
+        cout<<"Weights (W[i, j]):\n";
+        for(int i=0;i<=n;i++) {
+            for(int j=i;j<=n;j++) cout<<"W["<<i<<","<<j<<"]="<<W[i][j]<<"\t";
+            cout<<endl;
+        }
+        cout<<"\nCosts (C[i, j]):\n";
+        for(int i=0;i<=n;i++) {
+            for(int j=i;j<=n;j++) cout<<"C["<<i<<","<<j<<"]="<<C[i][j]<<"\t";
+            cout<<endl;
+        }
+    }
+
+    void preorder(int i, int j) {
+        if(i==j) return;
+        int root=R[i][j];
+        cout<<keys[root]<<" ";
+        preorder(i, root-1);
+        preorder(root, j);
+    }
+
+    void inorder(int i, int j) {
+        if(i==j) return;
+        int root=R[i][j];
+        inorder(i, root-1);
+        cout<<keys[root]<<" ";
+        inorder(root, j);
+    }
 };
 
 int main() {
-OBST p;
-int n;
-cout<<"Enter the number of keys:"; cin>>n;
-int key[n],sp[n],usp[n+1];
-cout<<"Enter the keys:"; for(int i=0;i<n;i++) cin>>key[i];
-cout<<"Enter the successful probabilities:"; for(int i=0;i<n;i++) cin>>sp[i];
-cout<<"Enter the unsuccessful probabilities:"; for(int i=0;i<=n;i++) cin>>usp[i];
-cout<<"Minimum cost of OBST: "<<p.cost(0,n-1,sp,usp)<<endl;
-return 0;
+    int n;
+    cout<<"Enter the number of keys: ";
+    cin>>n;
+
+    int sp[n+1], usp[n+1];
+    OBST obst(n);
+
+    cout<<"Enter the keys: ";
+    for(int i=1;i<=n;i++) cin>>obst.keys[i];
+    cout<<"Enter the successful probabilities: ";
+    for(int i=1;i<=n;i++) cin>>sp[i];
+    cout<<"Enter the unsuccessful probabilities: ";
+    for(int i=0;i<=n;i++) cin>>usp[i];
+
+    obst.calcWeights(sp, usp);
+    obst.calcCosts();
+
+    obst.displayWeightsAndCosts();
+
+    cout<<"\nPreorder Traversal of OBST: ";
+    obst.preorder(0, n);
+    cout<<"\nInorder Traversal of OBST: ";
+    obst.inorder(0, n);
+    cout<<endl;
+
+    return 0;
 }
